@@ -4,40 +4,48 @@ import React from "react";
 import { database, firebase } from "../firebase";
 
 export default function Home() {
-  const copyToClipboardFallback = (text: string) => {
-    const textarea = document.createElement("textarea");
-    textarea.value = text;
-    document.body.appendChild(textarea);
-    textarea.select();
-    try {
-      const successful = document.execCommand("copy");
-      const msg = successful ? "successful" : "unsuccessful";
-      console.log("Fallback: Copying text command was " + msg);
-    } catch (err) {
-      console.error("Fallback: Oops, unable to copy", err);
-    }
-    document.body.removeChild(textarea);
-  };
+  const copyToClipboard = (text: string) => {
+    let textarea;
+    let result;
 
-  const copyToClipboard = async (text: string) => {
-    if (!navigator.clipboard) {
-      copyToClipboardFallback(text);
-      return;
-    }
     try {
-      await navigator.clipboard.writeText(text);
-      // Check if the text was successfully copied by reading the clipboard
-      const copiedText = await navigator.clipboard.readText();
-      if (copiedText === text) {
-        console.log("Verification successful: Text copied to clipboard");
-      } else {
-        throw new Error("Verification failed: Clipboard text does not match");
-      }
+      textarea = document.createElement("textarea");
+      textarea.setAttribute("readonly", "true");
+      textarea.setAttribute("contenteditable", "true");
+      textarea.style.position = "fixed"; // prevent scroll from jumping to the bottom when focus is set.
+      textarea.value = text;
+
+      document.body.appendChild(textarea);
+
+      textarea.focus();
+      textarea.select();
+
+      const range = document.createRange();
+      range.selectNodeContents(textarea);
+
+      const sel = window.getSelection();
+      sel!.removeAllRanges();
+      sel!.addRange(range);
+
+      textarea.setSelectionRange(0, textarea.value.length);
+      result = document.execCommand("copy");
     } catch (err) {
-      console.error("Failed to copy or verify: ", err);
-      // Use the fallback method if direct clipboard access failed or verification failed
-      copyToClipboardFallback(text);
+      console.error(err);
+      result = null;
+    } finally {
+      document.body.removeChild(textarea!);
     }
+
+    // manual copy fallback using prompt
+    if (!result) {
+      const isMac = navigator.platform.toUpperCase().indexOf("MAC") >= 0;
+      const copyHotkey = isMac ? "⌘C" : "CTRL+C";
+      result = prompt(`Press ${copyHotkey}`, text); // eslint-disable-line no-alert
+      if (!result) {
+        return false;
+      }
+    }
+    return true;
   };
 
   const checkPermission = () => {
@@ -72,9 +80,8 @@ export default function Home() {
       })
       .then((currentToken) => {
         if (currentToken) {
-          copyToClipboard(currentToken)
-            .then(() => window.alert("Current token copied to clipboard"))
-            .catch((e) => console.log(e));
+          copyToClipboard(currentToken);
+          window.alert(currentToken);
         } else {
           // Show permission request.
           console.log(
