@@ -73,16 +73,8 @@ self.addEventListener("notificationclick", function (event) {
   // Handle the click event based on the notification data
   const url = event.notification.data.url;
   if (url) {
-    // Navigate to the URL in the same tab
-    event.waitUntil(
-      clients.matchAll({ type: "window" }).then((windowClients) => {
-        if (windowClients && windowClients.length) {
-          windowClients[0].navigate(url);
-        } else {
-          self.clients.openWindow(url);
-        }
-      })
-    );
+    // Open the URL in a new window or tab
+    clients.openWindow(url);
   } else {
     // Handle the click event as needed
     console.log("No URL specified in the notification data.");
