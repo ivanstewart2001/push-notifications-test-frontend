@@ -1,5 +1,8 @@
 "use client";
 
+import React from "react";
+import { database, firebase } from "../../firebase";
+
 export default function Home() {
   const checkPermission = () => {
     if (!("serviceWorker" in navigator)) {
@@ -16,8 +19,35 @@ export default function Home() {
   };
 
   const registerSW = async () => {
-    const registration = await navigator.serviceWorker.register("sw.js");
-    return registration;
+    const registration = await navigator.serviceWorker.register(
+      "/firebase-messaging-sw.js",
+      {
+        scope: "/",
+      }
+    );
+
+    console.log(registration);
+    const messaging = firebase.messaging();
+
+    messaging
+      .getToken({
+        serviceWorkerRegistration: registration,
+        vapidKey:
+          "BEkB6bDKO_oZPYvQTh6j_w023stz5lp-CyaOJ-n_u66JE-kce_1Z9GTVVPj14-rv9qiXHEqj7-k7E-1sq_r8w1U",
+      })
+      .then((currentToken) => {
+        if (currentToken) {
+          console.log(currentToken);
+        } else {
+          // Show permission request.
+          console.log(
+            "No registration token available. Request permission to generate one."
+          );
+        }
+      })
+      .catch((err) => {
+        console.log("An error occurred while retrieving token. ", err);
+      });
   };
 
   const requestNotificationPermission = async () => {
@@ -45,8 +75,16 @@ export default function Home() {
   };
 
   return (
-    <div>
-      <button onClick={main}>Enable Notifications</button>
+    <div className="container mx-auto p-4">
+      <h1 className="text-2xl font-bold mb-4">Push Notifications Demo</h1>
+      <div className="mb-4">
+        <button
+          onClick={main}
+          className="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded"
+        >
+          Enable Notifications
+        </button>
+      </div>
     </div>
   );
 }
