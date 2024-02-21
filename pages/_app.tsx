@@ -7,21 +7,20 @@ import { firebase } from "../firebase";
 const App: FC<AppProps> = ({ Component, ...rest }) => {
   function registerFirebaseServiceWorker(callback: () => void) {
     if ("serviceWorker" in navigator) {
-      // window.addEventListener("load", () => {
-      //   console.log("HIIIIIIIIII");
-
       navigator.serviceWorker
         .register("/firebase-messaging-sw.js", { scope: "/" })
         .then((registration) => {
-          console.log("ServiceWorker registration successful:", registration);
+          console.log(
+            "Firebase ServiceWorker registration successful:",
+            registration
+          );
           callback();
         })
         .catch((error) => {
-          console.error("ServiceWorker registration failed:", error);
+          console.error("Firebase ServiceWorker registration failed:", error);
         });
-      // });
     } else {
-      console.log("???");
+      console.log("Service Worker not supported in this browser.");
     }
   }
 
