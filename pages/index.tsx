@@ -112,6 +112,7 @@ export default function Home() {
       );
 
       notification.onclick = function (event) {
+        console.log("LINE 115!!!!!!!!!!!!");
         event.preventDefault(); // Prevent default behavior (opening a new tab)
         // Navigate to the specified URL
         const url = notificationOptions.data.url;
