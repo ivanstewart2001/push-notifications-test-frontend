@@ -26,36 +26,41 @@ const App: FC<AppProps> = ({ Component, ...rest }) => {
     }
   }, []);
 
-  const messaging = firebase.messaging();
+  useEffect(() => {
+    // Check if Firebase is available (for client-side only)
+    if (typeof window !== "undefined" && firebase.messaging.isSupported()) {
+      const messaging = firebase.messaging();
 
-  messaging.onMessage((payload) => {
-    console.log("Message received. ", payload);
-    // Customize notification here
-    const notificationTitle = "onMessage: " + payload.notification.title;
-    const notificationOptions = {
-      body: payload.notification.body,
-      icon: payload.notification.icon,
-      data: {
-        url: payload.data.click_action,
-      },
-    };
+      messaging.onMessage((payload) => {
+        console.log("Message received. ", payload);
+        // Customize notification here
+        const notificationTitle = "onMessage: " + payload.notification.title;
+        const notificationOptions = {
+          body: payload.notification.body,
+          icon: payload.notification.icon,
+          data: {
+            url: payload.data.click_action,
+          },
+        };
 
-    // Display the notification
-    const notification = new Notification(
-      notificationTitle,
-      notificationOptions
-    );
+        // Display the notification
+        const notification = new Notification(
+          notificationTitle,
+          notificationOptions
+        );
 
-    notification.onclick = function (event) {
-      console.log("LINE 49!!!!!!!!!!!!");
-      event.preventDefault(); // Prevent default behavior (opening a new tab)
-      // Navigate to the specified URL
-      const url = notificationOptions.data.url;
-      if (url) {
-        window.open(url, "_self"); // Open in the same tab
-      }
-    };
-  });
+        notification.onclick = function (event) {
+          console.log("Notification clicked");
+          event.preventDefault(); // Prevent default behavior (opening a new tab)
+          // Navigate to the specified URL
+          const url = notificationOptions.data.url;
+          if (url) {
+            window.open(url, "_self"); // Open in the same tab
+          }
+        };
+      });
+    }
+  }, []);
 
   return (
     <>
