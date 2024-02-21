@@ -25,6 +25,11 @@ async function registerFirebaseServiceWorker() {
       }
     );
 
+    registration.installing?.addEventListener("statechange", (event) => {
+      const sw = event.target as ServiceWorker;
+      console.log("Service Worker state changed:", sw.state);
+    });
+
     console.log(
       "Firebase ServiceWorker registration successful:",
       registration
