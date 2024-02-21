@@ -4,12 +4,39 @@ import React from "react";
 import { database, firebase } from "../firebase";
 
 export default function Home() {
+  const copyToClipboardFallback = (text: string) => {
+    const textarea = document.createElement("textarea");
+    textarea.value = text;
+    document.body.appendChild(textarea);
+    textarea.select();
+    try {
+      const successful = document.execCommand("copy");
+      const msg = successful ? "successful" : "unsuccessful";
+      console.log("Fallback: Copying text command was " + msg);
+    } catch (err) {
+      console.error("Fallback: Oops, unable to copy", err);
+    }
+    document.body.removeChild(textarea);
+  };
+
   const copyToClipboard = async (text: string) => {
+    if (!navigator.clipboard) {
+      copyToClipboardFallback(text);
+      return;
+    }
     try {
       await navigator.clipboard.writeText(text);
-      console.log("Text copied to clipboard");
+      // Check if the text was successfully copied by reading the clipboard
+      const copiedText = await navigator.clipboard.readText();
+      if (copiedText === text) {
+        console.log("Verification successful: Text copied to clipboard");
+      } else {
+        throw new Error("Verification failed: Clipboard text does not match");
+      }
     } catch (err) {
-      console.error("Failed to copy: ", err);
+      console.error("Failed to copy or verify: ", err);
+      // Use the fallback method if direct clipboard access failed or verification failed
+      copyToClipboardFallback(text);
     }
   };
 
