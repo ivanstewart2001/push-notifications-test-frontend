@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
-// import "./globals.css";
+import Head from "next/head";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -16,6 +16,23 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <Head>
+        {/* PushAlert Script */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function(d, t) {
+                var g = d.createElement(t),
+                  s = d.getElementsByTagName(t)[0];
+                g.src = "https://cdn.pushalert.co/integrate_0073d17c5fd7750df5730123ad7b392a.js";
+                s.parentNode.insertBefore(g, s);
+              })(document, "script");
+            `,
+          }}
+        />
+        {/* End PushAlert Script */}
+      </Head>
+
       <body className={inter.className}>{children}</body>
     </html>
   );
