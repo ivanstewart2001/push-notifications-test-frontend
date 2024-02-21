@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "node swEnvBuild.js && next dev",
-    "build": "next build && node swEnvBuild.js",
+    "build": "node swEnvBuild.js && next build",
     "start": "next start",
     "lint": "next lint"
   },
