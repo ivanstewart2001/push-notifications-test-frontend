@@ -1,15 +1,9 @@
-"use client";
-
-import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { FC, useState, useEffect } from "react";
+import type { AppProps } from "next/app";
 import Head from "next/head";
-import { useEffect } from "react";
+import Router, { useRouter } from "next/router";
 
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+const App: FC<AppProps> = ({ Component, ...rest }) => {
   useEffect(() => {
     console.log("HELOOOOOOOO");
 
@@ -32,12 +26,15 @@ export default function RootLayout({
   }, []);
 
   return (
-    <html lang="en">
+    <>
       <Head>
-        <link rel="manifest" href="manifest.json" />
+        <title>Push Notifications Demo</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
       </Head>
 
-      <body>{children}</body>
-    </html>
+      <Component {...rest} />
+    </>
   );
-}
+};
+
+export default App;

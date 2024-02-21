@@ -1,9 +1,18 @@
 "use client";
 
 import React from "react";
-import { database, firebase } from "../../firebase";
+import { database, firebase } from "../firebase";
 
 export default function Home() {
+  const copyToClipboard = async (text: string) => {
+    try {
+      await navigator.clipboard.writeText(text);
+      console.log("Text copied to clipboard");
+    } catch (err) {
+      console.error("Failed to copy: ", err);
+    }
+  };
+
   const checkPermission = () => {
     if (!("serviceWorker" in navigator)) {
       throw new Error("No support for service worker!");
@@ -26,7 +35,6 @@ export default function Home() {
       }
     );
 
-    console.log(registration);
     const messaging = firebase.messaging();
 
     messaging
@@ -37,7 +45,9 @@ export default function Home() {
       })
       .then((currentToken) => {
         if (currentToken) {
-          window.alert(JSON.stringify(JSON.parse(currentToken)));
+          copyToClipboard(currentToken)
+            .then(() => window.alert("Current token copied to clipboard"))
+            .catch((e) => console.log(e));
         } else {
           // Show permission request.
           console.log(
