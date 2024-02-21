@@ -10,26 +10,26 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  // useEffect(() => {
-  //   console.log("HELOOOOOOOO");
+  useEffect(() => {
+    console.log("HELOOOOOOOO");
 
-  //   if ("serviceWorker" in navigator) {
-  //     // window.addEventListener("load", () => {
-  //     //   console.log("HIIIIIIIIII");
+    if ("serviceWorker" in navigator) {
+      // window.addEventListener("load", () => {
+      //   console.log("HIIIIIIIIII");
 
-  //     navigator.serviceWorker
-  //       .register("/sw.js")
-  //       .then((registration) => {
-  //         console.log("ServiceWorker registration successful:", registration);
-  //       })
-  //       .catch((error) => {
-  //         console.error("ServiceWorker registration failed:", error);
-  //       });
-  //     // });
-  //   } else {
-  //     console.log("???");
-  //   }
-  // }, []);
+      navigator.serviceWorker
+        .register("/firebase-messaging-sw.js")
+        .then((registration) => {
+          console.log("ServiceWorker registration successful:", registration);
+        })
+        .catch((error) => {
+          console.error("ServiceWorker registration failed:", error);
+        });
+      // });
+    } else {
+      console.log("???");
+    }
+  }, []);
 
   return (
     <html lang="en">
