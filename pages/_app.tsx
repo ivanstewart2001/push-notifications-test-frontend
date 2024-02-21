@@ -4,31 +4,30 @@ import Head from "next/head";
 import Router, { useRouter } from "next/router";
 import { firebase } from "../firebase";
 
-const App: FC<AppProps> = ({ Component, ...rest }) => {
-  function registerFirebaseServiceWorker(callback: () => void) {
-    if ("serviceWorker" in navigator) {
-      navigator.serviceWorker
-        .register("/firebase-messaging-sw.js", { scope: "/" })
-        .then((registration) => {
-          console.log(
-            "Firebase ServiceWorker registration successful:",
-            registration
-          );
-          callback();
-        })
-        .catch((error) => {
-          console.error("Firebase ServiceWorker registration failed:", error);
-        });
-    } else {
-      console.log("Service Worker not supported in this browser.");
-    }
+function registerFirebaseServiceWorker() {
+  if ("serviceWorker" in navigator) {
+    navigator.serviceWorker
+      .register("/firebase-messaging-sw.js", { scope: "/" })
+      .then((registration) => {
+        console.log(
+          "Firebase ServiceWorker registration successful:",
+          registration
+        );
+      })
+      .catch((error) => {
+        console.error("Firebase ServiceWorker registration failed:", error);
+      });
+  } else {
+    console.log("Service Worker not supported in this browser.");
   }
+}
 
+const App: FC<AppProps> = ({ Component, ...rest }) => {
   useEffect(() => {
-    registerFirebaseServiceWorker(() => {});
-  }, []);
+    console.log("_APP USE EFFECT FIRED");
 
-  useEffect(() => {
+    registerFirebaseServiceWorker();
+
     // Check if Firebase is available (for client-side only)
     if (typeof window !== "undefined" && firebase.messaging.isSupported()) {
       const messaging = firebase.messaging();
@@ -57,10 +56,9 @@ const App: FC<AppProps> = ({ Component, ...rest }) => {
           // Navigate to the specified URL
           const url = notificationOptions.data.url;
           if (url) {
-            registerFirebaseServiceWorker(() => {
-              window.open(url, "_self");
-            });
+            registerFirebaseServiceWorker();
             // Open in the same tab
+            window.open(url, "_self");
           }
         };
       });
