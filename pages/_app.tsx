@@ -5,9 +5,7 @@ import Router, { useRouter } from "next/router";
 import { firebase } from "../firebase";
 
 const App: FC<AppProps> = ({ Component, ...rest }) => {
-  useEffect(() => {
-    console.log("HELOOOOOOOO");
-
+  function registerFirebaseServiceWorker(callback: () => void) {
     if ("serviceWorker" in navigator) {
       // window.addEventListener("load", () => {
       //   console.log("HIIIIIIIIII");
@@ -16,6 +14,7 @@ const App: FC<AppProps> = ({ Component, ...rest }) => {
         .register("/firebase-messaging-sw.js", { scope: "/" })
         .then((registration) => {
           console.log("ServiceWorker registration successful:", registration);
+          callback();
         })
         .catch((error) => {
           console.error("ServiceWorker registration failed:", error);
@@ -24,6 +23,10 @@ const App: FC<AppProps> = ({ Component, ...rest }) => {
     } else {
       console.log("???");
     }
+  }
+
+  useEffect(() => {
+    registerFirebaseServiceWorker(() => {});
   }, []);
 
   useEffect(() => {
@@ -55,7 +58,10 @@ const App: FC<AppProps> = ({ Component, ...rest }) => {
           // Navigate to the specified URL
           const url = notificationOptions.data.url;
           if (url) {
-            window.open(url, "_self"); // Open in the same tab
+            registerFirebaseServiceWorker(() => {
+              window.open(url, "_self");
+            });
+            // Open in the same tab
           }
         };
       });
