@@ -96,14 +96,29 @@ export default function Home() {
     messaging.onMessage((payload) => {
       console.log("Message received. ", payload);
       // Customize notification here
-      const notificationTitle = payload.notification.title;
+      const notificationTitle = "onMessage: " + payload.notification.title;
       const notificationOptions = {
         body: payload.notification.body,
         icon: payload.notification.icon,
+        data: {
+          url: payload.data.click_action,
+        },
       };
 
       // Display the notification
-      new Notification(notificationTitle, notificationOptions);
+      const notification = new Notification(
+        notificationTitle,
+        notificationOptions
+      );
+
+      notification.onclick = function (event) {
+        event.preventDefault(); // Prevent default behavior (opening a new tab)
+        // Navigate to the specified URL
+        const url = notificationOptions.data.url;
+        if (url) {
+          window.open(url, "_self"); // Open in the same tab
+        }
+      };
     });
   };
 
