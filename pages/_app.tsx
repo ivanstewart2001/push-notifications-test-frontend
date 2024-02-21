@@ -12,7 +12,7 @@ const App: FC<AppProps> = ({ Component, ...rest }) => {
       //   console.log("HIIIIIIIIII");
 
       navigator.serviceWorker
-        .register("/firebase-messaging-sw.js")
+        .register("/firebase-messaging-sw.js", { scope: "/" })
         .then((registration) => {
           console.log("ServiceWorker registration successful:", registration);
         })

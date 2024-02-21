@@ -63,3 +63,20 @@ messaging.onBackgroundMessage(function (payload) {
 
   self.registration.showNotification(notificationTitle, notificationOptions);
 });
+
+self.addEventListener("notificationclick", function (event) {
+  console.log("Notification clicked:", event.notification);
+
+  // Close the notification
+  event.notification.close();
+
+  // Handle the click event based on the notification data
+  const url = event.notification.data.url;
+  if (url) {
+    // Open the URL in a new window or tab
+    clients.openWindow(url);
+  } else {
+    // Handle the click event as needed
+    console.log("No URL specified in the notification data.");
+  }
+});
