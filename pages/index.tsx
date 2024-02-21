@@ -58,6 +58,19 @@ export default function Home() {
       .catch((err) => {
         console.log("An error occurred while retrieving token. ", err);
       });
+
+    messaging.onMessage((payload) => {
+      console.log("Message received. ", payload);
+      // Customize notification here
+      const notificationTitle = payload.notification.title;
+      const notificationOptions = {
+        body: payload.notification.body,
+        icon: payload.notification.icon,
+      };
+
+      // Display the notification
+      new Notification(notificationTitle, notificationOptions);
+    });
   };
 
   const requestNotificationPermission = async () => {
