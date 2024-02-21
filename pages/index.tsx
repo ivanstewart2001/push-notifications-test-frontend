@@ -93,34 +93,34 @@ export default function Home() {
         console.log("An error occurred while retrieving token. ", err);
       });
 
-    messaging.onMessage((payload) => {
-      console.log("Message received. ", payload);
-      // Customize notification here
-      const notificationTitle = "onMessage: " + payload.notification.title;
-      const notificationOptions = {
-        body: payload.notification.body,
-        icon: payload.notification.icon,
-        data: {
-          url: payload.data.click_action,
-        },
-      };
+    // messaging.onMessage((payload) => {
+    //   console.log("Message received. ", payload);
+    //   // Customize notification here
+    //   const notificationTitle = "onMessage: " + payload.notification.title;
+    //   const notificationOptions = {
+    //     body: payload.notification.body,
+    //     icon: payload.notification.icon,
+    //     data: {
+    //       url: payload.data.click_action,
+    //     },
+    //   };
 
-      // Display the notification
-      const notification = new Notification(
-        notificationTitle,
-        notificationOptions
-      );
+    //   // Display the notification
+    //   const notification = new Notification(
+    //     notificationTitle,
+    //     notificationOptions
+    //   );
 
-      notification.onclick = function (event) {
-        console.log("LINE 115!!!!!!!!!!!!");
-        event.preventDefault(); // Prevent default behavior (opening a new tab)
-        // Navigate to the specified URL
-        const url = notificationOptions.data.url;
-        if (url) {
-          window.open(url, "_self"); // Open in the same tab
-        }
-      };
-    });
+    //   notification.onclick = function (event) {
+    //     console.log("LINE 115!!!!!!!!!!!!");
+    //     event.preventDefault(); // Prevent default behavior (opening a new tab)
+    //     // Navigate to the specified URL
+    //     const url = notificationOptions.data.url;
+    //     if (url) {
+    //       window.open(url, "_self"); // Open in the same tab
+    //     }
+    //   };
+    // });
   };
 
   const requestNotificationPermission = async () => {
