@@ -33,6 +33,10 @@ export default function RootLayout({
 
   return (
     <html lang="en">
+      <Head>
+        <link rel="manifest" href="manifest.json" />
+      </Head>
+
       <body>{children}</body>
     </html>
   );

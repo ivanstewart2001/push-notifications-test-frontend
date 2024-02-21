@@ -37,7 +37,7 @@ export default function Home() {
       })
       .then((currentToken) => {
         if (currentToken) {
-          window.alert(currentToken);
+          window.alert(JSON.stringify(JSON.parse(currentToken)));
         } else {
           // Show permission request.
           console.log(
