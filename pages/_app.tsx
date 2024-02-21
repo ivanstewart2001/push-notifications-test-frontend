@@ -4,21 +4,33 @@ import Head from "next/head";
 import Router, { useRouter } from "next/router";
 import { firebase } from "../firebase";
 
-function registerFirebaseServiceWorker() {
-  if ("serviceWorker" in navigator) {
-    navigator.serviceWorker
-      .register("/firebase-messaging-sw.js", { scope: "/" })
-      .then((registration) => {
-        console.log(
-          "Firebase ServiceWorker registration successful:",
-          registration
-        );
-      })
-      .catch((error) => {
-        console.error("Firebase ServiceWorker registration failed:", error);
-      });
-  } else {
-    console.log("Service Worker not supported in this browser.");
+async function registerFirebaseServiceWorker() {
+  if (!("serviceWorker" in navigator)) {
+    console.log("No support for service worker!");
+  }
+
+  if (!("Notification" in window)) {
+    console.log("No support for notification API");
+  }
+
+  if (!("PushManager" in window)) {
+    console.log("No support for Push API");
+  }
+
+  try {
+    const registration = await navigator.serviceWorker.register(
+      "/firebase-messaging-sw.js",
+      {
+        scope: "/",
+      }
+    );
+
+    console.log(
+      "Firebase ServiceWorker registration successful:",
+      registration
+    );
+  } catch (error) {
+    console.error("Firebase ServiceWorker registration failed:", error);
   }
 }
 
@@ -26,24 +38,11 @@ const App: FC<AppProps> = ({ Component, ...rest }) => {
   useEffect(() => {
     console.log("_APP USE EFFECT FIRED");
 
+    // Register Firebase service worker
+    registerFirebaseServiceWorker();
+
     // Check if Firebase is available (for client-side only)
     if (typeof window !== "undefined" && firebase.messaging.isSupported()) {
-      // Register Firebase service worker
-      registerFirebaseServiceWorker();
-
-      // Check if a service worker is already registered and active
-      navigator.serviceWorker.ready
-        .then((registration) => {
-          if (!registration.active) {
-            // If no active service worker, register a new one
-            registerFirebaseServiceWorker();
-          }
-        })
-        .catch((error) => {
-          // Error handling if service worker registration fails
-          console.error("Error checking service worker registration:", error);
-        });
-
       const messaging = firebase.messaging();
 
       messaging.onMessage((payload) => {
@@ -70,8 +69,6 @@ const App: FC<AppProps> = ({ Component, ...rest }) => {
           // Navigate to the specified URL
           const url = notificationOptions.data.url;
           if (url) {
-            // Re-register service worker
-            registerFirebaseServiceWorker();
             // Open in the same tab
             window.open(url, "_self");
           }
@@ -79,6 +76,7 @@ const App: FC<AppProps> = ({ Component, ...rest }) => {
       });
     }
   }, []);
+
   return (
     <>
       <Head>
