@@ -3,7 +3,7 @@ const withPWA = require("next-pwa")({
   dest: "public",
   skipWaiting: true,
   register: true,
-  sw: false,
+  sw: "firebase-messaging-sw.js",
 });
 const nextConfig = {};
 
