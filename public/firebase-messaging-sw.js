@@ -80,3 +80,13 @@ self.addEventListener("notificationclick", function (event) {
     console.log("No URL specified in the notification data.");
   }
 });
+
+self.addEventListener("install", function (event) {
+  console.log("Installing service worker...");
+  self.skipWaiting(); // Skip waiting here
+});
+
+self.addEventListener("activate", function (event) {
+  console.log("Activating service worker...");
+  return self.clients.claim();
+});

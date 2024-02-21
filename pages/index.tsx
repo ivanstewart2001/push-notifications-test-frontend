@@ -2,8 +2,11 @@
 
 import React from "react";
 import { database, firebase } from "../firebase";
+import { useRouter } from "next/router";
 
 export default function Home() {
+  const router = useRouter();
+
   const copyToClipboard = (text: string) => {
     let textarea;
     let result;
@@ -157,6 +160,9 @@ export default function Home() {
         >
           Enable Notifications
         </button>
+
+        <button onClick={() => router.push("/page1")}>Page 1</button>
+        <button onClick={() => router.push("/page2")}>Page 2</button>
       </div>
     </div>
   );
